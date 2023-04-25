@@ -1,4 +1,5 @@
 import { API_KEY } from ".";
+import { SortOptions } from "../components/constants";
 
 type Movie = {
   title: string;
@@ -17,13 +18,18 @@ type MoviesPage = {
 async function getMoviesDataForCompanies(
   page: number = 1,
   companiesIds: string[] | undefined,
-  sortOption = "release_date.desc"
+  sortOption: SortOptions | string = SortOptions.release_date_desc
 ): Promise<MoviesPage> | never {
   if (!page || !companiesIds || companiesIds.length === 0) {
     throw new Error("Query arguments provisioning malformed.");
   }
 
   const urlEncodedCompanyIds = companiesIds.join("|");
+
+  console.log("A INTRAT");
+  console.log(
+    `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&language=en-US&sort_by=${sortOption}&page=${page}&with_companies=${urlEncodedCompanyIds}`
+  );
 
   const response = await fetch(
     `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&language=en-US&sort_by=${sortOption}&page=${page}&with_companies=${urlEncodedCompanyIds}`
@@ -34,6 +40,8 @@ async function getMoviesDataForCompanies(
   }
 
   const dataFromServer = await response.json();
+
+  console.log("--DATA--");
 
   const moviesPage: MoviesPage = {
     results: dataFromServer.results.map(
@@ -56,6 +64,8 @@ async function getMoviesDataForCompanies(
     ),
     next: dataFromServer.total_pages === page ? undefined : page + 1,
   };
+
+  console.log(moviesPage);
 
   return moviesPage;
 }
