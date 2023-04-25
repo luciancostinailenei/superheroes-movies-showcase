@@ -46,7 +46,7 @@ const MoviesList = () => {
       const scrollableHeight =
         document.documentElement.scrollHeight - window.innerHeight;
 
-      if (window.scrollY >= scrollableHeight) {
+      if (window.scrollY >= scrollableHeight - 50) {
         fetchNextPage();
       }
     }
